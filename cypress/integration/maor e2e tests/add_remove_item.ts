@@ -59,7 +59,7 @@ context("Whatever", () => {
     });
   });
 
-  it.only(`Remove many`, () => {
+  it(`Remove many`, () => {
     ["buy drinks", "buy milk", "buy sandwich"].forEach((testItem) => {
       cy.get("[data-testid=item-input]").type(testItem);
 

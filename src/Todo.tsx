@@ -6,7 +6,7 @@ type Item = {
 };
 
 export const Todo = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [value, setValue] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
@@ -30,6 +30,7 @@ export const Todo = () => {
         }}
       >
         <input
+          data-testid="item-input"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           style={{
@@ -42,6 +43,7 @@ export const Todo = () => {
           }}
         />
         <button
+          data-testid="button-submit"
           onClick={handleSubmit}
           disabled={loading || !value}
           style={{
@@ -62,6 +64,7 @@ export const Todo = () => {
       <ul>
         {items.map((currentItem) => (
           <li
+            data-testid={`item-${currentItem.id}`}
             key={currentItem.id}
             style={{ marginBottom: "15px", cursor: "pointer" }}
             onClick={() =>

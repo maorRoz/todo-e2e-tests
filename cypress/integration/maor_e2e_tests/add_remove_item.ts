@@ -25,28 +25,6 @@ context("Whatever", () => {
     cy.contains(buyMilk).should("not.exist");
   });
 
-  ["buy drinks", "buy sandwich"].forEach((testItem) => {
-    it(`Add '${testItem}'`, () => {
-      cy.get("[data-testid=item-input]")
-        .type(testItem)
-        .should("have.value", testItem);
-
-      cy.get("[data-testid=button-submit]").click();
-
-      cy.contains(testItem).should("exist");
-    });
-
-    it(`Remove '${testItem}'`, () => {
-      cy.get("[data-testid=item-input]").type(testItem);
-
-      cy.get("[data-testid=button-submit]").click();
-
-      cy.get("[data-testid=item-1]").click();
-
-      cy.contains(testItem).should("not.exist");
-    });
-  });
-
   it(`Add many`, () => {
     ["buy drinks", "buy milk", "buy sandwich"].forEach((testItem, index) => {
       cy.get("[data-testid=item-input]").type(testItem);

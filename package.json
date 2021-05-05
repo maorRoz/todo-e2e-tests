@@ -21,6 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:playwright": "jest",
+    "test:cypress":"cypress run -s 'cypress/integration/maor_e2e_tests/*'",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

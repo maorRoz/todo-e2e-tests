@@ -5,22 +5,19 @@ let page: Page;
 
 const buyMilk = "buy milk";
 
-jest.setTimeout(20000);
-
 beforeAll(async () => {
   browser = await chromium.launch();
-  page = await browser.newPage();
-  await page.goto("http://localhost:3000/");
 });
 
 beforeEach(async () => {
-  page.reload();
+  page = await browser.newPage();
+  await page.goto("http://localhost:3000/");
 });
 
 test(`add ${buyMilk}`, async () => {
   await page.fill("data-testid=item-input", buyMilk);
 
-  await page.click("[data-testid=button-submit]");
+  await page.click("data-testid=button-submit");
 
   const itemContent = await page.textContent("data-testid=item-1");
 
@@ -30,7 +27,7 @@ test(`add ${buyMilk}`, async () => {
 test(`remove ${buyMilk}`, async () => {
   await page.fill("data-testid=item-input", buyMilk);
 
-  await page.click("[data-testid=button-submit]");
+  await page.click("data-testid=button-submit");
 
   await page.click("data-testid=item-1");
 
@@ -39,67 +36,40 @@ test(`remove ${buyMilk}`, async () => {
   expect(itemContent).toBeNull();
 });
 
-["buy drinks", "buy sandwich"].forEach((testItem, index) => {
-  test(`Add '${testItem}'`, async () => {
-    await page.fill("data-testid=item-input", testItem);
-
-    await page.click("[data-testid=button-submit]");
-
-    const itemContent = await page.textContent(`data-testid=item-${index + 1}`);
-
-    expect(itemContent).toBe(testItem);
-  });
-
-  test(`Remove '${testItem}'`, async () => {
-    await page.fill("data-testid=item-input", testItem);
-
-    await page.click("[data-testid=button-submit]");
-
-    await page.click(`data-testid=item-${index + 1}`);
-
-    const itemContent = await page.$(`data-testid=item-${index + 1}`);
-
-    expect(itemContent).toBeNull();
-  });
+test("add many", async () => {
+  await page.fill("data-testid=item-input", "buy drinks");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-1`);
+  await page.fill("data-testid=item-input", "buy milk");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-2`);
+  await page.fill("data-testid=item-input", "buy sandwich");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-3`);
 });
 
-test("add many", () => {
-  ["buy drinks", "buy milk", "buy sandwich"].forEach(
-    async (testItem, index) => {
-      await page.fill("data-testid=item-input", testItem);
-
-      await page.click("[data-testid=button-submit]");
-
-      await page.fill("data-testid=item-input", "");
-
-      const itemContent = await page.textContent(
-        `data-testid=item-${index + 1}`
-      );
-
-      expect(itemContent).toBe(testItem);
-    }
-  );
-});
 test("remove many", async () => {
-  await Promise.all(
-    ["buy drinks", "buy milk", "buy sandwich"].map(async (testItem, index) => {
-      await page.fill("data-testid=item-input", testItem);
+  await page.fill("data-testid=item-input", "buy drinks");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-1`);
+  await page.fill("data-testid=item-input", "buy milk");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-2`);
+  await page.fill("data-testid=item-input", "buy sandwich");
+  await page.click("data-testid=button-submit");
+  await page.waitForSelector(`data-testid=item-3`);
 
-      await page.click("[data-testid=button-submit]");
+  await page.click("data-testid=item-1");
+  await page.click("data-testid=item-2");
+  await page.click("data-testid=item-3");
 
-      await page.fill("data-testid=item-input", "");
-    })
-  );
+  const itemContent1 = await page.$("data-testid=item-1");
+  const itemContent2 = await page.$("data-testid=item-2");
+  const itemContent3 = await page.$("data-testid=item-3");
 
-  await Promise.all(
-    ["buy drinks", "buy milk", "buy sandwich"].map(async (testItem, index) => {
-      await page.click(`data-testid=item-${index + 1}`);
-
-      const itemContent = await page.$(`data-testid=item-${index + 1}`);
-
-      expect(itemContent).toBeNull();
-    })
-  );
+  expect(itemContent1).toBeNull();
+  expect(itemContent2).toBeNull();
+  expect(itemContent3).toBeNull();
 });
 
 afterAll(async () => {

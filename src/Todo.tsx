@@ -16,6 +16,7 @@ export const Todo = () => {
     setTimeout(() => {
       setItems(items.concat({ id: count, value: value }));
       setCount(count + 1);
+      setValue("");
       setLoading(false);
     }, 2000);
   };
